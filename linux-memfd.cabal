@@ -1,0 +1,76 @@
+name:           linux-memfd
+cabal-version:  >= 1.10
+version:        0.1.0.0
+synopsis:       Create anonymous, memory-backed files with the memfd_create syscall
+description:    Please see the README on GitHub at <https://github.com/phlummox/linux-memfd#readme>
+category:       System
+stability:      experimental
+homepage:       https://github.com/phlummox/hs-linux-memfd#readme
+bug-reports:    https://github.com/phlummox/hs-linux-memfd/issues
+author:         phlummox
+maintainer:     phlummox2@gmail.com
+copyright:      2019 phlummox
+license:        PublicDomain
+license-file:   LICENSE
+build-type:     Custom
+extra-source-files:
+    README.md
+    ChangeLog.md
+    include/memfd.h
+
+source-repository head
+  type: git
+  location: https://github.com/phlummox/hs-linux-memfd
+
+custom-setup
+  setup-depends:
+      Cabal
+    , base >=4 && <5
+    , cabal-doctest >=1
+
+flag no-examples
+  description: don't build the examples
+  manual: False
+  default: True
+
+library
+  exposed-modules:
+      System.Linux.MemFd
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  cc-options: -pedantic -Wall -Wextra
+  include-dirs:
+      include
+  c-sources:
+      cbits/memfd.c
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable linux-memfd-example
+  main-is: Main.hs
+  hs-source-dirs:
+      examples
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , linux-memfd
+  if flag(no-examples)
+    buildable: False
+  else
+    buildable: True
+  default-language: Haskell2010
+
+test-suite linux-memfd-doctests
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  hs-source-dirs:
+      src-doctests
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , doctest
+    , linux-memfd
+    , unix
+  default-language: Haskell2010
